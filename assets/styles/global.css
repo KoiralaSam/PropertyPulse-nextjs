@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --font-display: "Poppins", "sans-serif"; /* Correctly defined custom property */
+  --gridTemplateColumns-70-30: 70% 30%; /* Corrected syntax for custom property */
+}
