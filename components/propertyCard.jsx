@@ -13,7 +13,7 @@ const PropertyCard = ({ property, isAboveFold }) => {
     if (rates.monthly) {
       return `$${rates.monthly.toLocaleString()}/mo`;
     } else if (rates.weekly) {
-      return `$${rates.weekly.toLocaleString()}/mo`;
+      return `$${rates.weekly.toLocaleString()}/wk`;
     } else if (rates.nightly) {
       return `$${rates.nightly.toLocaleString()}/night`;
     }
@@ -56,12 +56,21 @@ const PropertyCard = ({ property, isAboveFold }) => {
         </div>
 
         <div className="flex justify-center gap-4 text-green-900 text-sm mb-4">
-          <p>
-            <FaMoneyBill className="md:hidden lg:inline" /> Weekly
-          </p>
-          <p>
-            <FaMoneyBill className="md:hidden lg:inline" /> Monthly
-          </p>
+          {property.rates.weekly && (
+            <p>
+              <FaMoneyBill className="md:hidden lg:inline" /> Weekly
+            </p>
+          )}
+          {property.rates.monthly && (
+            <p>
+              <FaMoneyBill className="md:hidden lg:inline" /> Monthly
+            </p>
+          )}
+          {property.rates.nightly && (
+            <p>
+              <FaMoneyBill className="md:hidden lg:inline" /> Nightly
+            </p>
+          )}
         </div>
 
         <div className="border border-gray-100 mb-5"></div>
