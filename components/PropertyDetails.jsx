@@ -76,9 +76,7 @@ const PropertyDetails = ({ property }) => {
             <span className="hidden sm:inline"> sqft</span>
           </p>
         </div>
-        <p className="text-gray-500 mb-4">
-          This is a beautiful apartment located near the commons
-        </p>
+        <p className="text-gray-500 mb-4">{property.description}</p>
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow-md mt-6">
