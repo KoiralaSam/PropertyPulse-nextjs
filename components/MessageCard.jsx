@@ -1,7 +1,7 @@
 "use client";
 import { toast } from "react-toastify";
 import { useState } from "react";
-import markMessageAsRead from "@/app/actions/MarkMessageAsRead";
+import markMessageAsRead from "@/app/actions/markMessageAsRead";
 import deleteMessages from "@/app/actions/deleteMessages";
 import { useGlobalContext } from "@/context/GlobalContext";
 
