@@ -1,8 +1,71 @@
+"use client";
 import addProperty from "@/app/actions/addProperty";
+import { useState } from "react";
+import Image from "next/image";
 
 const PropertyAddForm = () => {
+  const [formState, setFormState] = useState({});
+  const [images, setImages] = useState([]);
+  const [previewUrls, setPreviewUrls] = useState([]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormState((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files).filter((image) => {
+      return image.name !== "";
+    });
+    setImages(files);
+    setPreviewUrls(files.map((file) => URL.createObjectURL(file)));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+
+    // Append all formState fields
+    for (const key in formState) {
+      formData.append(key, formState[key]);
+    }
+
+    const amenities = document.querySelectorAll(
+      'input[name="amenities"]:checked'
+    );
+    amenities.forEach((amenity) => formData.append("amenities", amenity.value));
+
+    const imageUrls = [];
+
+    for (const imageFile of images) {
+      const imageFormData = new FormData();
+
+      imageFormData.append("file", imageFile);
+
+      imageFormData.append("upload_preset", "ml_default");
+
+      const res = await fetch(
+        "https://api.cloudinary.com/v1_1/samarpan/upload",
+        {
+          method: "POST",
+          body: imageFormData,
+        }
+      );
+
+      const result = await res.json();
+
+      console.log(result);
+
+      imageUrls.push(result.secure_url);
+    }
+
+    formData.append("images", JSON.stringify(imageUrls)); // Pass as a JSON string
+
+    await addProperty(formData);
+  };
+
   return (
-    <form action={addProperty}>
+    <form onSubmit={handleSubmit}>
       <h2 className="text-3xl text-center font-semibold mb-6">Add Property</h2>
 
       <div className="mb-4">
@@ -13,6 +76,7 @@ const PropertyAddForm = () => {
           id="type"
           name="type"
           className="border rounded w-full py-2 px-3"
+          onChange={handleChange}
           required
         >
           <option value="Apartment">Apartment</option>
@@ -33,6 +97,7 @@ const PropertyAddForm = () => {
           id="name"
           name="name"
           className="border rounded w-full py-2 px-3 mb-2"
+          onChange={handleChange}
           placeholder="eg. Beautiful Apartment In Miami"
           required
         />
@@ -48,6 +113,7 @@ const PropertyAddForm = () => {
           id="description"
           name="description"
           className="border rounded w-full py-2 px-3"
+          onChange={handleChange}
           rows="4"
           placeholder="Add an optional description of your property"
         ></textarea>
@@ -60,6 +126,7 @@ const PropertyAddForm = () => {
           id="street"
           name="location.street"
           className="border rounded w-full py-2 px-3 mb-2"
+          onChange={handleChange}
           placeholder="Street"
         />
         <input
@@ -68,6 +135,7 @@ const PropertyAddForm = () => {
           name="location.city"
           className="border rounded w-full py-2 px-3 mb-2"
           placeholder="City"
+          onChange={handleChange}
           required
         />
         <input
@@ -76,6 +144,7 @@ const PropertyAddForm = () => {
           name="location.state"
           className="border rounded w-full py-2 px-3 mb-2"
           placeholder="State"
+          onChange={handleChange}
           required
         />
         <input
@@ -84,6 +153,7 @@ const PropertyAddForm = () => {
           name="location.zipcode"
           className="border rounded w-full py-2 px-3 mb-2"
           placeholder="Zipcode"
+          onChange={handleChange}
         />
       </div>
 
@@ -97,6 +167,7 @@ const PropertyAddForm = () => {
             id="beds"
             name="beds"
             className="border rounded w-full py-2 px-3"
+            onChange={handleChange}
             required
           />
         </div>
@@ -109,6 +180,7 @@ const PropertyAddForm = () => {
             id="baths"
             name="baths"
             className="border rounded w-full py-2 px-3"
+            onChange={handleChange}
             required
           />
         </div>
@@ -124,6 +196,7 @@ const PropertyAddForm = () => {
             id="square_feet"
             name="square_feet"
             className="border rounded w-full py-2 px-3"
+            onChange={handleChange}
             required
           />
         </div>
@@ -139,6 +212,7 @@ const PropertyAddForm = () => {
               name="amenities"
               value="Wifi"
               className="mr-2"
+              onChange={handleChange}
             />
             <label htmlFor="amenity_wifi">Wifi</label>
           </div>
@@ -149,6 +223,7 @@ const PropertyAddForm = () => {
               name="amenities"
               value="Full kitchen"
               className="mr-2"
+              onChange={handleChange}
             />
             <label htmlFor="amenity_kitchen">Full kitchen</label>
           </div>
@@ -159,6 +234,7 @@ const PropertyAddForm = () => {
               name="amenities"
               value="Washer & Dryer"
               className="mr-2"
+              onChange={handleChange}
             />
             <label htmlFor="amenity_washer_dryer">Washer & Dryer</label>
           </div>
@@ -169,6 +245,7 @@ const PropertyAddForm = () => {
               name="amenities"
               value="Free Parking"
               className="mr-2"
+              onChange={handleChange}
             />
             <label htmlFor="amenity_free_parking">Free Parking</label>
           </div>
@@ -179,6 +256,7 @@ const PropertyAddForm = () => {
               name="amenities"
               value="Swimming Pool"
               className="mr-2"
+              onChange={handleChange}
             />
             <label htmlFor="amenity_pool">Swimming Pool</label>
           </div>
@@ -189,6 +267,7 @@ const PropertyAddForm = () => {
               name="amenities"
               value="Hot Tub"
               className="mr-2"
+              onChange={handleChange}
             />
             <label htmlFor="amenity_hot_tub">Hot Tub</label>
           </div>
@@ -199,6 +278,7 @@ const PropertyAddForm = () => {
               name="amenities"
               value="24/7 Security"
               className="mr-2"
+              onChange={handleChange}
             />
             <label htmlFor="amenity_24_7_security">24/7 Security</label>
           </div>
@@ -209,6 +289,7 @@ const PropertyAddForm = () => {
               name="amenities"
               value="Wheelchair Accessible"
               className="mr-2"
+              onChange={handleChange}
             />
             <label htmlFor="amenity_wheelchair_accessible">
               Wheelchair Accessible
@@ -221,6 +302,7 @@ const PropertyAddForm = () => {
               name="amenities"
               value="Elevator Access"
               className="mr-2"
+              onChange={handleChange}
             />
             <label htmlFor="amenity_elevator_access">Elevator Access</label>
           </div>
@@ -231,6 +313,7 @@ const PropertyAddForm = () => {
               name="amenities"
               value="Dishwasher"
               className="mr-2"
+              onChange={handleChange}
             />
             <label htmlFor="amenity_dishwasher">Dishwasher</label>
           </div>
@@ -241,6 +324,7 @@ const PropertyAddForm = () => {
               name="amenities"
               value="Gym/Fitness Center"
               className="mr-2"
+              onChange={handleChange}
             />
             <label htmlFor="amenity_gym_fitness_center">
               Gym/Fitness Center
@@ -253,6 +337,7 @@ const PropertyAddForm = () => {
               name="amenities"
               value="Air Conditioning"
               className="mr-2"
+              onChange={handleChange}
             />
             <label htmlFor="amenity_air_conditioning">Air Conditioning</label>
           </div>
@@ -263,6 +348,7 @@ const PropertyAddForm = () => {
               name="amenities"
               value="Balcony/Patio"
               className="mr-2"
+              onChange={handleChange}
             />
             <label htmlFor="amenity_balcony_patio">Balcony/Patio</label>
           </div>
@@ -273,6 +359,7 @@ const PropertyAddForm = () => {
               name="amenities"
               value="Smart TV"
               className="mr-2"
+              onChange={handleChange}
             />
             <label htmlFor="amenity_smart_tv">Smart TV</label>
           </div>
@@ -283,6 +370,7 @@ const PropertyAddForm = () => {
               name="amenities"
               value="Coffee Maker"
               className="mr-2"
+              onChange={handleChange}
             />
             <label htmlFor="amenity_coffee_maker">Coffee Maker</label>
           </div>
@@ -303,6 +391,7 @@ const PropertyAddForm = () => {
               id="weekly_rate"
               name="rates.weekly"
               className="border rounded w-full py-2 px-3"
+              onChange={handleChange}
             />
           </div>
           <div className="flex items-center">
@@ -314,6 +403,7 @@ const PropertyAddForm = () => {
               id="monthly_rate"
               name="rates.monthly"
               className="border rounded w-full py-2 px-3"
+              onChange={handleChange}
             />
           </div>
           <div className="flex items-center">
@@ -325,6 +415,7 @@ const PropertyAddForm = () => {
               id="nightly_rate"
               name="rates.nightly"
               className="border rounded w-full py-2 px-3"
+              onChange={handleChange}
             />
           </div>
         </div>
@@ -343,6 +434,7 @@ const PropertyAddForm = () => {
           name="seller_info.name"
           className="border rounded w-full py-2 px-3"
           placeholder="Name"
+          onChange={handleChange}
         />
       </div>
       <div className="mb-4">
@@ -359,6 +451,7 @@ const PropertyAddForm = () => {
           className="border rounded w-full py-2 px-3"
           placeholder="Email address"
           required
+          onChange={handleChange}
         />
       </div>
       <div className="mb-4">
@@ -374,6 +467,7 @@ const PropertyAddForm = () => {
           name="seller_info.phone"
           className="border rounded w-full py-2 px-3"
           placeholder="Phone"
+          onChange={handleChange}
         />
       </div>
 
@@ -386,10 +480,25 @@ const PropertyAddForm = () => {
           id="images"
           name="images"
           className="border rounded w-full py-2 px-3"
+          onChange={handleImageChange}
           accept="image/*"
           multiple
           required
         />
+      </div>
+
+      <div className="flex gap-2">
+        {previewUrls.map((url, i) => (
+          <Image
+            key={i}
+            src={url}
+            alt="Preview"
+            className="w-20 h-20 object-cover"
+            height={0}
+            width={0}
+            sizes="30"
+          />
+        ))}
       </div>
 
       <div>

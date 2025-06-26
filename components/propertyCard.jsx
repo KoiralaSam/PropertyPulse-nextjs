@@ -28,7 +28,7 @@ const PropertyCard = ({ property, isAboveFold }) => {
           width="0"
           height="0"
           sizes="70vw"
-          className="w-full h-auto rounded-t-xl"
+          className="w-full h-[250px] rounded-t-xl object-cover"
           priority={isAboveFold}
         />
       </Link>
