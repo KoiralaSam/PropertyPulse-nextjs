@@ -2,6 +2,7 @@ import PropertyCard from "@/components/propertyCard";
 import connectDB from "@/config/db";
 import { getSessionUser } from "@/utils/getSessionUser";
 import User from "@/models/User";
+import "@/models/Property";
 
 const SavedPropertiesPage = async () => {
   await connectDB();
