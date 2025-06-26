@@ -493,7 +493,7 @@ const PropertyAddForm = () => {
             key={i}
             src={url}
             alt="Preview"
-            className="w-20 h-20 object-cover"
+            className="w-20 h-20 object-cover mb-4"
             height={0}
             width={0}
             sizes="30"
