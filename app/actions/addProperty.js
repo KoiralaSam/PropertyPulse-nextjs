@@ -52,9 +52,10 @@ export default async function addProperty(formData) {
     await newProperty.save();
 
     revalidatePath("/", "layout");
+    redirect(`/properties/${newProperty._id}`);
   } catch (error) {
     console.error("Failed to save property:", error);
     throw new Error("Property creation failed: " + error.message);
   }
-  redirect(`/properties/${newProperty._id}`);
+  
 }
