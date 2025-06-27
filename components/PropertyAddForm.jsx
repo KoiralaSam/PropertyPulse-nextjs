@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 
 const PropertyAddForm = () => {
-  const [formState, setFormState] = useState({});
+  const [formState, setFormState] = useState({ type: "Apartment" });
   const [images, setImages] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
 
@@ -77,6 +77,7 @@ const PropertyAddForm = () => {
           name="type"
           className="border rounded w-full py-2 px-3"
           onChange={handleChange}
+          value={formState.type || "Apartment"}
           required
         >
           <option value="Apartment">Apartment</option>

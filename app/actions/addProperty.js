@@ -47,10 +47,14 @@ export default async function addProperty(formData) {
     images: JSON.parse(formData.get("images") || "[]"),
   };
 
-  const newProperty = new Property(propertyData);
-  await newProperty.save();
+  try {
+    const newProperty = new Property(propertyData);
+    await newProperty.save();
 
-  revalidatePath("/", "layout");
-
+    revalidatePath("/", "layout");
+  } catch (error) {
+    console.error("Failed to save property:", error);
+    throw new Error("Property creation failed: " + error.message);
+  }
   redirect(`/properties/${newProperty._id}`);
 }
